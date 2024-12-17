@@ -1,0 +1,46 @@
+
+
+// Helps in display Favourites Recipe
+const displayFavorites = () => {
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  recipeSection.innerHTML = '';
+
+  if (favorites.length === 0) {
+      recipeSection.innerHTML = `<p>No favorites yet! Add some recipes to your favorites list.</p>`;
+      return;
+  }
+
+  favorites.forEach((meal) => {
+      const favouritesDiv = document.createElement('div');
+      favouritesDiv.classList.add('recipe-card');
+      favouritesDiv.innerHTML = `
+          <i class="fa-solid fa-trash-can" onclick="removeFromFavorites('${meal.idMeal}')"></i>             
+          <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+          <p>${meal.strArea}</p>
+          <h3>${meal.strMeal}</h3>
+          <a href="${meal.strSource || meal.strYoutube}" target="_blank">View Recipe</a>         
+      `;
+      favoritesRecipe.appendChild(favouritesDiv);
+  });
+};
+
+// Function to add a recipe to favorites
+const addToFavorites = (meal) => {
+  console.log("Adding to favorites:", meal);
+  let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  if (!favorites.some(fav => fav.idMeal === meal.idMeal)) {
+      favorites.push(meal);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      console.log("Favorites updated:", favorites);
+      displayFavorites();
+  } else {
+      alert("This recipe is already in your favorites!");
+  }
+};
+// Function to remove a recipe from favorites
+const removeFromFavorites = (idMeal) => {
+  let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+  favorites = favorites.filter(meal => meal.idMeal !== idMeal);
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  displayFavorites();
+};
